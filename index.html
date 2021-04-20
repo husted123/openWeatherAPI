@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <!--Links-->
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Karla:wght@200&display=swap" rel="stylesheet">
+    
+</head>
+<body>
+<div id="weatherBug" class="weatherDiv">
+    <h1>Vejret</h1>
+    <br>
+    <div class="weather-icon"></div>
+
+
+    <p id="p2"></p>
+    <p id="p1"></p>
+    
+</div>
+
+</body>
+<script>
+    const openWeatherKey = "60fde36bdbe88663af8020b61800cab4";
+    const p = document.querySelector('#weatherBug p')
+    
+    let openWeatherData = {}
+    let xhr = new XMLHttpRequest()
+    xhr.open('GET',`http://api.openweathermap.org/data/2.5/weather?q=åbyhøj&units=metric&appid=${openWeatherKey}` )
+    xhr.responseType ='text'
+    
+    xhr.addEventListener('load', function(){
+        if (xhr.status === 200){
+            openWeatherData = JSON.parse(xhr.responseText)
+            populateWeatherinfo()
+           }   else {
+               p.textContent = "error: " + xhr.status;
+           }
+    }, false)
+    
+    xhr.send()
+
+
+    function populateWeatherinfo(){
+        //name, temp, wind, time
+        
+        const location = openWeatherData.name;
+        const temp = Math.round(openWeatherData.main.temp);
+        const wind = Math.round(openWeatherData.wind.speed);
+        const time = new Date(openWeatherData.dt * 1000);
+        const hrs = time.getHours();
+        const mins =time.getMinutes();
+        const iconId = openWeatherData.weather[0].icon
+        
+       
+
+        const str2 =` ${temp}&#0176`;
+        const str = `${location}
+        <br> Vind: ${wind} m/s<br> 
+        ${hrs}:${mins}`;
+        document.getElementById("p1").innerHTML = str
+        document.getElementById("p2").innerHTML = str2
+    
+        const iconElement = document.querySelector(".weather-icon")    
+        iconElement.innerHTML = `<img src="icons/${iconId}.png"/>`
+    }
+
+    
+    </script>
+
+</html>
